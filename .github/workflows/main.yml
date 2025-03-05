@@ -1,1 +1,18 @@
+name: Run Tests
 
+on:
+  workflow_dispatch:  # 允许手动触发工作流
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Run tests
+      run: |
+        # 在此处替换为你实际的测试命令
+        ./run-tests.sh  # 假设你有一个脚本来运行测试
+        echo "test"
