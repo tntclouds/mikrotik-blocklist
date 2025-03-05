@@ -14,5 +14,4 @@ jobs:
     - name: Run tests
       run: |
         # 在此处替换为你实际的测试命令
-        ./run-tests.sh  # 假设你有一个脚本来运行测试
         echo "test"
