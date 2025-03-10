@@ -43,6 +43,9 @@ jobs:
               echo "add list=tor_ipv6_blocklist address=\"$line\"" >> $ipv6_file
             fi
           done
+          echo "exit_file=${exit_file}" >> $GITHUB_ENV
+          echo "ipv4_file=${ipv4_file}" >> $GITHUB_ENV
+          echo "ipv6_file=${ipv6_file}" >> $GITHUB_ENV
 
       - name: Commit and push changes
         run: |
