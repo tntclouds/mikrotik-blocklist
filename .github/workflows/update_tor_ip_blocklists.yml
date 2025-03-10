@@ -2,14 +2,16 @@ name: Update Tor IP Blocklists
 
 on:
   workflow_dispatch:
-
+  schedule:
+    - cron: '15 * * * *'
+    
 jobs:
   convert:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@latest
+        uses: actions/checkout@v4
 
       - name: Download and Convert IP Lists
         run: |
