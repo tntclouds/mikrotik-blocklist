@@ -1,4 +1,4 @@
-name: Run Tests
+name: Convert Tor IP List to MikroTik Format
 
 on:
   workflow_dispatch:  # 允许手动触发工作流
@@ -13,5 +13,22 @@ jobs:
 
     - name: Run tests
       run: |
-        # 在此处替换为你实际的测试命令
-        echo "test"
+          # 下载 IP 列表并将其存储在变量中
+          ip_list=$(curl -s https://raw.githubusercontent.com/tntclouds/tor-ip-list/refs/heads/main/exit.txt)
+          
+          # 创建 MikroTik 格式文件和添加头部
+          echo "/ip firewall address-list" > tor_exit_blocklist.rsc
+          
+          # 遍历每个 IP 地址并格式化
+          while IFS= read -r line; do
+            if [[ $line =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              echo "add list=tor_exit_blocklist address=\"$line\"" >> tor_exit_blocklist.rsc
+            fi
+          done <<< "$ip_list"
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "${{ github.actor }}"
+        git config --global  user.email "aburrido@qq.com"
+        git add tor_exit_blocklist.rsc
+        git commit -m "Update Tor IP lists on $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit."
+        git push
