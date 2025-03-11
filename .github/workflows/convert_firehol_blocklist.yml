@@ -29,8 +29,10 @@ jobs:
             fi
           done
 
-      - name: Upload RSC File
-        uses: actions/upload-artifact@v2
-        with:
-          name: blocklist
-          path: blocklist.rsc
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "aburrido@qq.com"
+          git add blocklist.rsc
+          git commit -m "Update Blocklist on $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit."
+          git push
