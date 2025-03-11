@@ -1,0 +1,36 @@
+name: Convert FireHOL Blocklist to MikroTik RSC
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 * * * *'
+    
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Download and Convert FireHOL Blocklist
+        run: |
+          # 下载内容并保存在变量中
+          BLOCKLIST=$(curl -s https://raw.githubusercontent.com/firehol/blocklist-ipsets/refs/heads/master/firehol_level1.netset)
+
+          # 创建 RSC 文件
+          echo "! MikroTik Firewall Import" > blocklist.rsc
+          
+          # 转换格式
+          echo "$BLOCKLIST" | while read -r line; do
+            # 如果是有效的 IP 地址，格式化成 MikroTik 的 RSC
+            if [[ $line =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              echo "/ip firewall address-list add list=blocklist address=$line" >> blocklist.rsc
+            fi
+          done
+
+      - name: Upload RSC File
+        uses: actions/upload-artifact@v2
+        with:
+          name: blocklist
+          path: blocklist.rsc
