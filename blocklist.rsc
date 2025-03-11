@@ -1,4 +1,3 @@
-! MikroTik Firewall Import
 /ip firewall address-list
 add list=blocklist address="0.0.0.0/8"
 add list=blocklist address="1.10.16.0/20"
